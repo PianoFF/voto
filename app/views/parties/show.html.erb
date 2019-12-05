@@ -1,0 +1,100 @@
+    <%= render '/layouts/party-nav'%>
+    <%= render '/layouts/notice' %>
+
+    <!-- Header -->
+    <header class="header text-center text-white" style="background-image: linear-gradient(-225deg, #0439D9 0%, #0439D9 48%, #0439D9 100%);">
+      <div class="container">
+
+        <div class="row">
+          <div class="col-md-8 mx-auto">
+            <%= render '/layouts/notice' %>
+
+            <h1> <%=@party.name%> </h1>
+            <p> <%= @party.pitch%></p>
+            <hr class='w-100px'>
+            <p class="lead-2 opacity-90 mt-3">Founded: <%= @party.year%> | <%=link_to "Web", @party.website %> | <%=link_to "Twitter", @party.twitter %><br>
+            </p>
+            
+
+          </div>
+        </div>
+
+      </div>
+    </header><!-- /.header -->
+
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="section bg-gray">
+        <div class="container">
+          <div class="row">
+
+
+            <div class="col-md-8 col-xl-9">
+                <h3> Manifesto for 2019 Decemeber Election</h3><br>
+                <p><%=@party.manifesto%></p>
+                <hr>
+                <% unless current_user.voting %>
+                  <%=link_to "Vote for this party", vote_party_path, method: :post, class: 'btn btn-block btn-round btn-success mt-3'%>
+                  <p>Note you can only vote once and for one party only</p>
+                <% end %>
+                <h4>Result: <%= pluralize(@party.total_vote, 'Vote' ) %> from <%= Voting.all.count %> total</h4>
+                <br><br>
+                <p>Leave a comment: </p>
+                  
+                <%=form_with(url: "/comments", method: :post) do |f| %>
+                    <div class="form-group">
+                        <%= f.text_area :text, class: 'form-control', required: true%>
+                     </div>
+                     <%= hidden_field_tag 'party_id', @party.id %>
+                     <div class="form-group">
+                        <%= f.submit "Comment", class: "btn btn-block btn-danger" %>
+                    </div>
+                <%end%>
+
+                <hr>
+                <h3>Recent Comments</h3>
+                <% if @party.comments.empty? %>
+                  <p>There are currently no comment for this party manifesto, be the first to leave a comment.</p>
+                <% else %>
+                  <% @party.comments.each do |comment| %>
+                    <p><%= comment.text %></p>
+                    <p>By: <%= comment.user.first_name %> | Posted: <%= time_ago_in_words(comment.created_at) %> ago.</p>
+                    <hr>
+                  <% end%>
+                <% end %>
+
+            </div>
+
+            <div class="col-md-4 col-xl-3">
+              <div class="sidebar px-4 py-md-0">
+
+                <a class="twitter-timeline" href="https://twitter.com/thePeterAyeni/timelines/1202201162386198530?ref_src=twsrc%5Etfw">UK Election 2019 - Curated tweets by thePeterAyeni</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+                <hr>
+
+                <h6 class="sidebar-title">Groups</h6>
+                <div class="gap-multiline-items-1">
+                  <a class="badge badge-secondary" href="#">Youths</a>
+                  <a class="badge badge-secondary" href="#">Women</a>
+                  <a class="badge badge-secondary" href="#">LGBT</a>
+                  <a class="badge badge-secondary" href="#">Money Bag</a>
+                  <a class="badge badge-secondary" href="#">Londoner</a>
+                  <a class="badge badge-secondary" href="#">New Voters</a>
+                  <a class="badge badge-secondary" href="#">First Time Voters</a>
+                  
+                </div>
+
+
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+</main>
+
+
+
+
